@@ -1,4 +1,4 @@
-package br.com.gabrielbastos;
+package br.com.gabrielbastos.cursomc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
