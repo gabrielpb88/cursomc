@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import br.com.gabrielbastos.cursomc.domain.Categoria;
+import br.com.gabrielbastos.cursomc.dto.CategoriaDTO;
 import br.com.gabrielbastos.cursomc.repositories.CategoriaRepository;
 import br.com.gabrielbastos.cursomc.services.exception.ObjectNotFoundException;
 
@@ -46,6 +47,10 @@ public class CategoriaService {
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String directions){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(directions), orderBy);
 		return repo.findAll(pageRequest);
+	}
+	
+	public Categoria fromDTO(CategoriaDTO obj) {
+		return new Categoria(obj.getId(), obj.getNome());
 	}
 	
 
