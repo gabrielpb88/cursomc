@@ -2,38 +2,40 @@ package br.com.gabrielbastos.cursomc.services.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.HandlerMapping;
 
-import br.com.gabrielbastos.cursomc.domain.enums.TipoCliente;
-import br.com.gabrielbastos.cursomc.dto.ClienteNewDTO;
+import br.com.gabrielbastos.cursomc.domain.Cliente;
+import br.com.gabrielbastos.cursomc.dto.ClienteDTO;
 import br.com.gabrielbastos.cursomc.repositories.ClienteRepository;
 import br.com.gabrielbastos.cursomc.resources.exception.FieldMessage;
-import br.com.gabrielbastos.cursomc.services.validation.utils.BR;
 
-public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
+public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate, ClienteDTO> {
 
+	@Autowired
+	HttpServletRequest request;
+	
 	@Autowired
 	ClienteRepository repo;
 
 	@Override
-	public boolean isValid(ClienteNewDTO cliente, ConstraintValidatorContext context) {
+	public boolean isValid(ClienteDTO cliente, ConstraintValidatorContext context) {
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		Integer id = Integer.parseInt(map.get("id"));
+		
 		List<FieldMessage> list = new ArrayList<>();
 
-		if (cliente.getTipoCliente().equals(TipoCliente.PESSOAFISICA.getCod())
-				&& !BR.isValidCPF(cliente.getCpfOuCnpj())) {
-			list.add(new FieldMessage("cpfOuCnpj", "CPF inválido"));
-		}
-
-		if (cliente.getTipoCliente().equals(TipoCliente.PESSOAJURIDICA.getCod())
-				&& !BR.isValidCNPJ(cliente.getCpfOuCnpj())) {
-			list.add(new FieldMessage("cpfOuCnpj", "CNPJ inválido"));
-		}
-
-		if (repo.findByEmail(cliente.getEmail()) != null) {
+		Cliente aux = repo.findByEmail(cliente.getEmail());
+		
+		if (aux != null && !aux.getId().equals(id)) {
 			list.add(new FieldMessage("email", "Email já existente"));
 		}
 
@@ -46,5 +48,5 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 
 		return list.isEmpty();
 	}
-	
+
 }
