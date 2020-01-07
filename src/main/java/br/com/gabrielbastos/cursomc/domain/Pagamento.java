@@ -90,7 +90,10 @@ public abstract class Pagamento implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Pagamento [id=" + id + ", estado=" + estado + ", pedido=" + pedido + "]";
+	}
 
 }
