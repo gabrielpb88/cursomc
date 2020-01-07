@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Pedido implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,11 +36,11 @@ public class Pedido implements Serializable {
 	private Cliente cliente;
 
 	@ManyToOne
-	@JoinColumn(name = "enderecoDeEntrega")
+	@JoinColumn(name = "endereco_de_entrega_id")
 	private Endereco enderecoDeEntrega;
 
 	@OneToMany(mappedBy = "id.pedido")
-	private Set<ItemPedido> itens = new HashSet<ItemPedido>();
+	private Set<ItemPedido> itens = new HashSet<>();
 
 	public Pedido() {
 	}
@@ -52,6 +51,14 @@ public class Pedido implements Serializable {
 		this.instante = instante;
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+
+	public double getValorTotal() {
+		double soma = 0.0;
+		for (ItemPedido ip : itens) {
+			soma = soma + ip.getSubTotal();
+		}
+		return soma;
 	}
 
 	public Integer getId() {
@@ -125,6 +132,12 @@ public class Pedido implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Pedido [id=" + id + ", instante=" + instante + ", pagamento=" + pagamento + ", cliente=" + cliente
+				+ ", enderecoDeEntrega=" + enderecoDeEntrega + ", itens=" + itens + "]";
 	}
 
 }

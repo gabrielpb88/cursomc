@@ -12,11 +12,10 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Endereco implements Serializable{
+public class Endereco implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	@JsonIgnore
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -25,17 +24,18 @@ public class Endereco implements Serializable{
 	private String complemento;
 	private String bairro;
 	private String cep;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "cidade_id")
 	private Cidade cidade;
-	
+
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
-	
-	public Endereco() {}
+
+	public Endereco() {
+	}
 
 	public Endereco(Integer id, String logradouro, String numero, String complemento, String bairro, String cep,
 			Cliente cliente, Cidade cidade) {
@@ -138,6 +138,12 @@ public class Endereco implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Endereco [id=" + id + ", logradouro=" + logradouro + ", numero=" + numero + ", complemento="
+				+ complemento + ", bairro=" + bairro + ", cep=" + cep + ", cidade=" + cidade + ", cliente=" + cliente
+				+ "]";
+	}
+
 }
