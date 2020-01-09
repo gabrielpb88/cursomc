@@ -37,6 +37,9 @@ public class PedidoService {
 
 	@Autowired
 	EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	ClienteService clienteService;
 
 	public Pedido find(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
@@ -47,6 +50,7 @@ public class PedidoService {
 	@Transactional
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
+		obj.setCliente(clienteService.buscar(obj.getCliente().getId()));
 		obj.setInstante(new Date());
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
@@ -65,6 +69,7 @@ public class PedidoService {
 		}
 
 		itemPedidoRepository.saveAll(obj.getItens());
+		System.out.println(obj);
 		return obj;
 	}
 
