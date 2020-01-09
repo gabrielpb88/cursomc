@@ -11,7 +11,6 @@ import br.com.gabrielbastos.cursomc.domain.ItemPedido;
 import br.com.gabrielbastos.cursomc.domain.PagamentoComBoleto;
 import br.com.gabrielbastos.cursomc.domain.Pedido;
 import br.com.gabrielbastos.cursomc.domain.enums.EstadoPagamento;
-import br.com.gabrielbastos.cursomc.repositories.EnderecoRepository;
 import br.com.gabrielbastos.cursomc.repositories.ItemPedidoRepository;
 import br.com.gabrielbastos.cursomc.repositories.PagamentoRepository;
 import br.com.gabrielbastos.cursomc.repositories.PedidoRepository;
@@ -33,13 +32,13 @@ public class PedidoService {
 	private ProdutoService produtoService;
 
 	@Autowired
-	ItemPedidoRepository itemPedidoRepository;
-
-	@Autowired
-	EnderecoRepository enderecoRepository;
+	private ItemPedidoRepository itemPedidoRepository;
 	
 	@Autowired
-	ClienteService clienteService;
+	private	ClienteService clienteService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Pedido find(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
@@ -64,12 +63,13 @@ public class PedidoService {
 
 		for (ItemPedido ip : obj.getItens()) {
 			ip.setDesconto(0.0);
+			ip.setProduto(produtoService.find(ip.getProduto().getId()));
 			ip.setPreco(produtoService.find(ip.getProduto().getId()).getPreco());
 			ip.setPedido(obj);
 		}
 
 		itemPedidoRepository.saveAll(obj.getItens());
-		System.out.println(obj);
+		emailService.sendOrderConfirmationEmail(obj);
 		return obj;
 	}
 
