@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 
 import br.com.gabrielbastos.cursomc.services.DBService;
 import br.com.gabrielbastos.cursomc.services.EmailService;
-import br.com.gabrielbastos.cursomc.services.MockEmailService;
+import br.com.gabrielbastos.cursomc.services.SmtpEmailService;
 
 @Configuration
 @Profile("dev")
@@ -32,6 +32,6 @@ public class DevConfig {
 
 	@Bean
 	public EmailService mailService() {
-		return new MockEmailService();
+		return new SmtpEmailService();
 	}
 }
