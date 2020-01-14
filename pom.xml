@@ -10,7 +10,8 @@
 	<packaging>jar</packaging>
 
 	<name>cursomc</name>
-	<description>Estudo de caso Java para curso de modelagem conceitual com UML</description>
+	<description>Estudo de caso Java para curso de modelagem conceitual com
+		UML</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -68,6 +69,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 	</dependencies>
 
