@@ -3,6 +3,7 @@ package br.com.gabrielbastos.cursomc.dto;
 import java.io.Serializable;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -14,38 +15,41 @@ public class ClienteNewDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull(message = "Preenchimento obrigatório")
-	@Length(min = 5, max=120, message = "O tamanho deve ser entre 5 e 120 caracteres")
+	@NotEmpty(message = "Preenchimento obrigatório")
+	@Length(min = 5, max = 120, message = "O tamanho deve ser entre 5 e 120 caracteres")
 	private String nome;
-	
-	@NotNull(message = "Preenchimento obrigatório")
-	@Email(message = "Email inválido")	
+
+	@NotEmpty(message = "Preenchimento obrigatório")
+	@Email(message = "Email inválido")
 	private String email;
-	
-	@NotNull(message = "Preenchimento obrigatório")
+
+	@NotEmpty(message = "Preenchimento obrigatório")
+	private String senha;
+
+	@NotEmpty(message = "Preenchimento obrigatório")
 	private String cpfOuCnpj;
-	
-	@NotNull(message = "Preenchimento obrigatório")
+
+	@NotEmpty(message = "Preenchimento obrigatório")
 	private Integer tipoCliente;
 
 	@NotNull(message = "Preenchimento obrigatório")
 	private String logradouro;
-	
+
 	@NotNull(message = "Preenchimento obrigatório")
 	private String numero;
-	
+
 	@NotNull(message = "Preenchimento obrigatório")
 	private String complemento;
-	
+
 	@NotNull(message = "Preenchimento obrigatório")
 	private String bairro;
-	
+
 	@NotNull(message = "Preenchimento obrigatório")
 	private String cep;
 
 	@NotNull(message = "Preenchimento obrigatório")
 	private String telefone1;
-	
+
 	private String telefone2;
 	private String telefone3;
 
@@ -60,6 +64,14 @@ public class ClienteNewDTO implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getEmail() {
