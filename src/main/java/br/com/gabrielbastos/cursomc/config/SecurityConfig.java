@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
 
-	private static String[] PUBLIC_MATCHERS_POST = { "/clientes/"};
+	private static String[] PUBLIC_MATCHERS_POST = { "/clientes/", "/auth/forgot/**"};
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
