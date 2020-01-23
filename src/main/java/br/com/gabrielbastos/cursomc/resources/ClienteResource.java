@@ -33,7 +33,7 @@ public class ClienteResource {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
-		return ResponseEntity.ok(service.buscar(id));
+		return ResponseEntity.ok(service.find(id));
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)

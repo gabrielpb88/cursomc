@@ -16,12 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.gabrielbastos.cursomc.domain.Cliente;
 import br.com.gabrielbastos.cursomc.domain.Endereco;
+import br.com.gabrielbastos.cursomc.domain.enums.Perfil;
 import br.com.gabrielbastos.cursomc.domain.enums.TipoCliente;
 import br.com.gabrielbastos.cursomc.dto.ClienteDTO;
 import br.com.gabrielbastos.cursomc.dto.ClienteNewDTO;
 import br.com.gabrielbastos.cursomc.repositories.CidadeRepository;
 import br.com.gabrielbastos.cursomc.repositories.ClienteRepository;
 import br.com.gabrielbastos.cursomc.repositories.EnderecoRepository;
+import br.com.gabrielbastos.cursomc.security.UserSS;
+import br.com.gabrielbastos.cursomc.services.exception.AuthorizationException;
 import br.com.gabrielbastos.cursomc.services.exception.ObjectNotFoundException;
 
 @Service
@@ -39,12 +42,14 @@ public class ClienteService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	public Cliente buscar(Integer id) {
-		Optional<Cliente> obj = repo.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
-	}
-	
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso Negado!");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
