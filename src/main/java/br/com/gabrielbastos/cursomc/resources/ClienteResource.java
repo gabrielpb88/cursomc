@@ -35,6 +35,12 @@ public class ClienteResource {
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 		return ResponseEntity.ok(service.find(id));
 	}
+
+	@RequestMapping(value = "/email", method = RequestMethod.GET)
+	public ResponseEntity<Cliente> find(@RequestParam(value = "value") String email) {
+		return ResponseEntity.ok(service.findByEmail(email));
+	}
+	
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteDTO>> findAll() {

@@ -29,38 +29,39 @@ import br.com.gabrielbastos.cursomc.services.exception.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
-	
+
 	@Autowired
 	private ClienteRepository repo;
-	
+
 	@Autowired
 	private EnderecoRepository repoEndereco;
-	
+
 	@Autowired
 	private CidadeRepository repoCidade;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	public Cliente find(Integer id) {
-		
+
 		UserSS user = UserService.authenticated();
-		
-		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
 			throw new AuthorizationException("Acesso Negado!");
 		}
-		
+
 		Optional<Cliente> obj = repo.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
-	
+
 	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
 		obj = repo.save(obj);
-		
-		repoEndereco.saveAll(obj.getEnderecos()); 
-		
+
+		repoEndereco.saveAll(obj.getEnderecos());
+
 		return obj;
 	}
 
@@ -69,7 +70,7 @@ public class ClienteService {
 		updateData(cliente, obj);
 		return repo.save(cliente);
 	}
-	
+
 	private void updateData(Cliente cliente, Cliente obj) {
 		cliente.setNome(obj.getNome());
 		cliente.setEmail(obj.getEmail());
@@ -78,7 +79,7 @@ public class ClienteService {
 	public void delete(Integer id) {
 		find(id);
 		try {
-			repo.deleteById(id);			
+			repo.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityViolationException("Não é possível excluir porque há entidades relacionadas");
 		}
@@ -87,36 +88,36 @@ public class ClienteService {
 	public List<Cliente> findAll() {
 		return repo.findAll();
 	}
-	
-	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String directions){
+
+	public Cliente findByEmail(String email) {
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+		Cliente cli = repo.findByEmail(email);
+		if (cli == null) {
+			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + user.getId());
+		}
+		return cli;
+	}
+
+	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String directions) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(directions), orderBy);
 		return repo.findAll(pageRequest);
 	}
-	
+
 	public Cliente fromDTO(ClienteDTO obj) {
 		return new Cliente(obj.getId(), obj.getNome(), obj.getEmail(), null, null, null);
 	}
 
 	public Cliente fromDTO(@Valid ClienteNewDTO objDTO) {
-		Cliente cli = new Cliente(
-				null, 
-				objDTO.getNome(), 
-				objDTO.getEmail(), 
-				objDTO.getCpfOuCnpj(),
-				TipoCliente.toEnum(objDTO.getTipoCliente()),
-				bCryptPasswordEncoder.encode(objDTO.getSenha()));
-		
-		Endereco end = new Endereco(
-				null,
-				objDTO.getLogradouro(),
-				objDTO.getNumero(),
-				objDTO.getComplemento(),
-				objDTO.getBairro(),
-				objDTO.getCep(),
-				cli,
-				repoCidade.findById(objDTO.getCidadeId()).get());
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(),
+				TipoCliente.toEnum(objDTO.getTipoCliente()), bCryptPasswordEncoder.encode(objDTO.getSenha()));
+
+		Endereco end = new Endereco(null, objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(),
+				objDTO.getBairro(), objDTO.getCep(), cli, repoCidade.findById(objDTO.getCidadeId()).get());
 		cli.getEnderecos().add(end);
-		
+
 		cli.getTelefones().add(objDTO.getTelefone1());
 		cli.getTelefones().add((objDTO.getTelefone2() != null) ? objDTO.getTelefone2() : null);
 		cli.getTelefones().add((objDTO.getTelefone3() != null) ? objDTO.getTelefone3() : null);
