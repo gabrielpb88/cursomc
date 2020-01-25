@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static String[] PUBLIC_MATCHERS = { "/h2-console/**" };
 
-	private static String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
+	private static String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**", "/estados/**" };
 
 	private static String[] PUBLIC_MATCHERS_POST = { "/clientes/", "/auth/forgot/**"};
 	
